@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.masaibar.firebaseplayground.databinding.ActivityMainBinding
+import com.masaibar.firebaseplayground.storage.StorageActivity
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
@@ -28,6 +29,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         binding.signInButton.setOnClickListener {
             signInWithGoogle()
+        }
+
+        binding.buttonStorage.setOnClickListener {
+            startActivity(
+                StorageActivity.createIntent(this)
+            )
         }
 
         viewModel.uiModel.observe(this, Observer { uiModel ->
