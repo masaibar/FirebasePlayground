@@ -19,7 +19,7 @@ class MainViewModel(
     registry: ActivityResultRegistry
 ) : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val googleSignIn: ActivityResultLauncher<Intent> = registry.register(
+    private val signInWithGoogleLauncher: ActivityResultLauncher<Intent> = registry.register(
         "key", // TODO ここは適当すぎるのでは
         ActivityResultContracts.StartActivityForResult()
     ) { activityResult ->
@@ -64,7 +64,8 @@ class MainViewModel(
         )
     }
 
-    fun signInWithGoogle(intent: Intent) = googleSignIn.launch(intent)
+    fun signInWithGoogle(intent: Intent) =
+        signInWithGoogleLauncher.launch(intent)
 
     fun getCurrentUser() {
         currentUserLiveData.postValue(auth.currentUser)
