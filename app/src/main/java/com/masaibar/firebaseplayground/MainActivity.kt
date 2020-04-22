@@ -14,10 +14,6 @@ import com.masaibar.firebaseplayground.storage.StorageActivity
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    companion object {
-        private const val REQUEST_SIGN_IN = 1234
-    }
-
     private val viewModel: MainViewModel by viewModels {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
