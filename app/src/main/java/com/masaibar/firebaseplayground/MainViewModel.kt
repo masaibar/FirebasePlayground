@@ -1,15 +1,46 @@
 package com.masaibar.firebaseplayground
 
+import android.content.Intent
+import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.masaibar.firebaseplayground.ext.combine
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    registry: ActivityResultRegistry
+) : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val googleSignIn: ActivityResultLauncher<Intent> = registry.register(
+        "key", // TODO ここは適当すぎるのでは
+        ActivityResultContracts.StartActivityForResult()
+    ) { activityResult ->
+        Log.d("googleSignIn", activityResult.toString())
+
+        if (activityResult.data == null) {
+            return@register
+        }
+
+        GoogleSignIn.getSignedInAccountFromIntent(activityResult.data)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.getResult(ApiException::class.java)?.let {
+                        firebaseAuthWithGoogle(it)
+                    }
+                } else {
+                    // TODO call showToast
+                }
+            }
+    }
+
 
     data class UiModel(
         val uid: String?
@@ -33,11 +64,13 @@ class MainViewModel : ViewModel() {
         )
     }
 
+    fun signInWithGoogle(intent: Intent) = googleSignIn.launch(intent)
+
     fun getCurrentUser() {
         currentUserLiveData.postValue(auth.currentUser)
     }
 
-    fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
