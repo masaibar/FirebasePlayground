@@ -7,8 +7,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.masaibar.firebaseplayground.databinding.ActivityMainBinding
 import com.masaibar.firebaseplayground.storage.StorageActivity
 
@@ -29,7 +27,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         binding.lifecycleOwner = this
 
         binding.signInButton.setOnClickListener {
-            signInWithGoogle()
+            viewModel.signInWithGoogle(this)
         }
 
         binding.buttonStorage.setOnClickListener {
@@ -43,18 +41,5 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         })
 
         viewModel.getCurrentUser()
-    }
-
-    // TODO ActivityとgetString問題を解決できるならIntent生成をまるっとViewModelに渡せそうなんだが…
-    private fun signInWithGoogle() {
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        val googleSignInClient = GoogleSignIn.getClient(
-            this,
-            googleSignInOptions
-        )
-        viewModel.signInWithGoogle(googleSignInClient.signInIntent)
     }
 }
