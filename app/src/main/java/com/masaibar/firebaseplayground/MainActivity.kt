@@ -40,6 +40,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             binding.uid = uiModel.uid
         })
 
-        viewModel.getCurrentUser()
+        viewModel.loadCurrentUser()
     }
 }

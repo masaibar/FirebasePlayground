@@ -78,7 +78,7 @@ class MainViewModel(
         signInWithGoogleLauncher.launch(googleSignInClient.signInIntent)
     }
 
-    fun getCurrentUser() {
+    fun loadCurrentUser() {
         currentUserLiveData.postValue(auth.currentUser)
     }
 
